@@ -63,6 +63,7 @@ set scrolloff=3 " Always show 3 lines above and below cursor
 set noshowmode " Don't show mode indicator
 set showcmd " Show information about current command
 set cursorline " Highlight line containing cursor
+set cursorcolumn " Highlight column containing cursor
 set ttyfast " Prevent slow scrolling
 set incsearch " Match on keypress instead of enter
 set shortmess=at " Shorter messages
