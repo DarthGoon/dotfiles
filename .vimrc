@@ -5,22 +5,18 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " Plugins
-Plugin 'mileszs/ack.vim'
 Plugin 'kien/ctrlp.vim'
 Plugin 'Yggdroot/indentLine'
-Plugin 'scrooloose/nerdtree'
-Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'scrooloose/syntastic'
 Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-fugitive'
 Plugin 'pangloss/vim-javascript'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'lilydjwg/colorizer'
 Plugin 'tpope/vim-sleuth'
 Plugin 'othree/html5.vim'
-Plugin 'hail2u/vim-css3-syntax'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'elzr/vim-json'
 Plugin 'othree/javascript-libraries-syntax.vim'
@@ -28,11 +24,10 @@ Plugin 'moll/vim-node'
 Plugin 'myhere/vim-nodejs-complete'
 Plugin 'jasoncodes/ctrlp-modified.vim'
 Plugin 'gcmt/wildfire.vim'
-Plugin 'rking/ag.vim'
-Plugin 'tpope/vim-surround'
 Plugin 'deris/vim-shot-f'
 Plugin 'raimondi/delimitmate'
-Plugin 'edsono/vim-matchit'
+Plugin 'airblade/vim-rooter'
+Plugin 'marijnh/tern_for_vim'
 
 call vundle#end()
 
@@ -70,14 +65,17 @@ set showcmd " Show information about current command
 set cursorline " Highlight line containing cursor
 set ttyfast " Prevent slow scrolling
 set incsearch " Match on keypress instead of enter
-set nofoldenable " Disable code folding
 set shortmess=at " Shorter messages
 set whichwrap=<,>,h,l " Allow cursor to wrap across lines
 set history=1000 " Increase command history
 set pastetoggle=<leader>V " Set paste mode toggle key binding
 set autoread " Reload files modified outside of Vim
+set foldmethod=indent " Fold based on indending
+set foldnestmax=10 " Deepest fold is 10 levels deep
+set nofoldenable " Don't fold by default
+"set ttymouse=sgr " Allow mouse usage past column maximum
 set wildignore+=*/.hg/*,*/.svn/*,*/tmp/*,*.so,*.swp,*.zip,*.mp3,*/node_modules/*,*.DS_Store
-colorscheme spacegray
+colorscheme distinguished
 
 " Save information across sessions
 set viminfo=%,'50
@@ -116,6 +114,12 @@ vnoremap > >gv
 :command! Wq wq
 :command! W w
 :command! Q q
+map q: :q
+
+" Jump to end of line when yanking / pasting
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
 
 " Clear highlighted matches
 nnoremap // :noh<CR>
@@ -127,19 +131,19 @@ nmap <Space> i
 nnoremap ; :
 " Force write
 cmap w!! w !sudo tee % >/dev/null
+" Paste over selection without yanking removed text
+xnoremap p pgvy
 
-" Toggle file tree
-nmap <leader>f :NERDTreeTabsToggle<CR>
 " Fuzzy find
 nnoremap <leader>p :CtrlP<CR>
 " Fuzzy find (modified files)
 nnoremap <leader>P :CtrlPModified<CR>
 " Open commands file in new tab
 nnoremap <leader>m :tabnew ~/.vim/commands<CR>
-" Ack
-nnoremap <leader>a :Ack 
-" Check syntax
-nnoremap <leader>s :SyntasticToggleMode<CR>
+" Toggle syntax check mode
+nnoremap <leader>i :SyntasticToggleMode<CR>
+" Remove trailing whitespace
+nnoremap <leader>I :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
 " Toggle indentation (tabs / spaces)
 nnoremap <leader>\ :call <SID>TabToggle()<CR>
 " Toggle indentation size (2 / 4)
@@ -176,8 +180,6 @@ noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
 " Move focus between windows
 nnoremap <leader>` <C-W><C-W>
-" Remove trailing whitespace
-nnoremap <leader>w :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
 " `open`
 nnoremap <leader>o :!open .<CR>
 " Compare staged changes against master
@@ -196,6 +198,10 @@ nnoremap <leader>gc :Gcommit<CR>
 nnoremap <leader>gp :Gpull<CR>
 " `git push`
 nnoremap <leader>gu :Gpush<CR>
+" Jump to definition of item under cursor (JavaScript)
+nnoremap <leader>. :TernDef<CR>
+" Find refererences to item under cursor (JavaScript)
+nnoremap <leader>> :TernRefs<CR>
 " Toggle comment block
 nnoremap <leader>/ :call NERDComment(0, "toggle")<CR>
 vnoremap <leader>/ :call NERDComment(0, "toggle")<CR>
@@ -316,16 +322,28 @@ augroup highlight_whitespace
 augroup END
 call HighlightWhitespaceOn()
 
-" nerdtree
-let g:NERDTreeShowHidden = 1
-let g:NERDTreeRespectWildIgnore = 1
-let g:NERDTreeMinimalUI = 1
-highlight Directory guifg=#FF0000 ctermfg=DarkBlue
+" Create window in supplied direction
+function! WinCreate(key)
+  let t:curwin = winnr()
+  exec "wincmd ".a:key
+  if (t:curwin == winnr())
+    if (match(a:key,'[jk]'))
+      wincmd v
+    else
+      wincmd s
+    endif
+    exec "wincmd ".a:key
+  endif
+endfunction
 
 " vim-airline
-let g:airline_theme = 'wombat'
+let g:airline_theme = 'distinguished'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#tabline#tab_min_count = 1
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline#extensions#tabline#show_close_button = 0
 
 " vim-gitgutter
 let g:gitgutter_sign_column_always = 1
@@ -340,8 +358,10 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\v\.(so|swp|zip|mp3|DS_Store|mov|woff|svg|jpg|jpeg|png|ttf|eot)$'
   \ }
 let g:ctrlp_prompt_mappings = {
-  \ 'AcceptSelection("e")': [],
-  \ 'AcceptSelection("t")': ['<c-t>', '<cr>', '<2-LeftMouse>'],
+  \ 'AcceptSelection("h")': [],
+  \ 'AcceptSelection("v")': [],
+  \ 'AcceptSelection("e")': ['<cr>', '<2-LeftMouse>'],
+  \ 'AcceptSelection("t")': ['<c-t>', '<c-cr>', '<s-cr>', '<s-t>', '<RightMouse>'],
   \ }
 if executable('ag')
   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
@@ -365,11 +385,6 @@ let g:syntastic_mode_map = {
 let g:indentLine_color_term = 239
 let g:indentLine_char = '¦'
 
-" YouCompleteMe
-let g:ycm_complete_in_strings = 0
-let g:ycm_seed_identifiers_with_syntax = 1
-let g:ycm_filetype_blacklist = { 'gitcommit' : 1 }
-
 " html5.vim
 let g:html5_event_handler_attributes_complete = 0
 let g:html5_rdfa_attributes_complete = 0
@@ -388,13 +403,12 @@ augroup json_autocmd
   autocmd FileType json set textwidth=78 shiftwidth=2
   autocmd FileType json set softtabstop=2 tabstop=8
   autocmd FileType json set expandtab
-  autocmd FileType json set foldmethod=syntax
 augroup END
-
-" ag.vim
-if executable('ag')
-  nnoremap <leader>a :Ag 
-endif
 
 " delimitMate
 let delimitMate_expand_cr = 1
+
+" Source custom vimrc file
+if filereadable(expand("~/.vimrc-custom"))
+  source ~/.vimrc-custom
+endif
