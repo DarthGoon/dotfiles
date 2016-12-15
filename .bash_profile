@@ -5,6 +5,7 @@ source ~/.git-completion.bash
 
 alias ll='ls -al'
 alias vi='/usr/local/bin/vim'
+alias del='rm -rf'
 alias gist='git status'
 alias gpll='git pull'
 alias gpsh='git push'
