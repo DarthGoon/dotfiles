@@ -6,6 +6,7 @@ call vundle#begin()
 
 " Plugins
 Plugin 'kien/ctrlp.vim'
+Plugin 'jasoncodes/ctrlp-modified.vim'
 Plugin 'Yggdroot/indentLine'
 Plugin 'scrooloose/syntastic'
 Plugin 'bling/vim-airline'
@@ -22,11 +23,13 @@ Plugin 'elzr/vim-json'
 Plugin 'othree/javascript-libraries-syntax.vim'
 Plugin 'moll/vim-node'
 Plugin 'myhere/vim-nodejs-complete'
-Plugin 'jasoncodes/ctrlp-modified.vim'
 Plugin 'gcmt/wildfire.vim'
 Plugin 'deris/vim-shot-f'
 Plugin 'raimondi/delimitmate'
 Plugin 'airblade/vim-rooter'
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'flowtype/vim-flow'
 Plugin 'marijnh/tern_for_vim'
 
 call vundle#end()
@@ -235,6 +238,7 @@ augroup syntax_mapping
   autocmd BufNewFile,BufRead *.mh setlocal ft=mason
   autocmd BufNewFile,BufRead *.json set ft=json
   autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+  autocmd BufNewFile,BufReadPost *.apib set filetype=markdown
 augroup END
 
 " Save when losing focus or switching buffers
