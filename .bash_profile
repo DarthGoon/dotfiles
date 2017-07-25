@@ -4,7 +4,7 @@ PROMPT_COMMAND='PS1X=$(p="${PWD#${HOME}}"; [ "${PWD}" != "${p}" ] && printf "~";
 
 test -e "${HOME}/.git-prompt.sh" && source ~/.git-prompt.sh || echo " Missing git prompt bash plugin"
 test -e "${HOME}/.git-completion.bash" && source ~/.git-completion.bash || echo "Missing git completion bash plugin"
-#test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash" || echo "Missing iterm2 shell integration"
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash" || echo "Missing iterm2 shell integration"
 
 alias ls='ls -al'
 alias vi='/usr/local/bin/vim'
@@ -17,8 +17,6 @@ alias gitd='git checkout develop'
 alias gitl='git log --oneline --decorate --color --graph'
 alias gbranch='git checkout'
 alias gifetch='git fetch -a'
-
-alias docleanup='docker-compose down;docker rm -v $(docker ps -a -q -f status=exited);docker rmi $(docker images -f "dangling=true" -q);docker volume rm $(docker volume ls -qf dangling=true);echo "Docker cleanup complete";'
 
 export NVM_DIR="/Users/aarondayalan/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
