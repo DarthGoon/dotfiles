@@ -31,6 +31,7 @@ Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'flowtype/vim-flow'
 Plugin 'marijnh/tern_for_vim'
+Plugin 'lokaltog/vim-distinguished'
 
 call vundle#end()
 
